@@ -30,6 +30,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+        <activity
+            android:name=".barcode.BarcodeScannerActivity"
+            android:parentActivityName=".MainActivity"
+            android:label="Scan Barcode">
+        </activity>
 
         <provider
             android:name=".data.BookProvider"
