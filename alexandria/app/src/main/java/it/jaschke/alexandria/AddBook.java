@@ -18,6 +18,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import it.jaschke.alexandria.barcode.BarcodeScannerActivity;
 import it.jaschke.alexandria.data.AlexandriaContract;
@@ -136,6 +139,13 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         if (requestCode == BarcodeScannerActivity.BARCODE_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 ean.setText(data.getStringExtra(BarcodeScannerActivity.BARCODE));
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                int errorCode = data.getIntExtra(BarcodeScannerActivity.ERROR_CODE, -1);
+                if (errorCode == -1) {
+                    Toast.makeText(getActivity(), "Could not initialize Barcode Scanner", Toast.LENGTH_LONG).show();
+                } else {
+                    GooglePlayServicesUtil.getErrorDialog(errorCode, getActivity(), 1).show();
+                }
             }
         }
     }

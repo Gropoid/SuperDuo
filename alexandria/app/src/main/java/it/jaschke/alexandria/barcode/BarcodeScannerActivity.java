@@ -28,6 +28,7 @@ import java.io.IOException;
 public class BarcodeScannerActivity extends Activity implements BarcodeInterpreter {
     public static final int BARCODE_REQUEST_CODE = 1;
     public static final String BARCODE = "BARCODE";
+    public static final String ERROR_CODE = "ERROR_CODE";
     public static final boolean AUTO_FOCUS = true;
     public static final boolean USE_FLASH = true;
     private static final String TAG = BarcodeScannerActivity.class.getSimpleName();
@@ -42,8 +43,11 @@ public class BarcodeScannerActivity extends Activity implements BarcodeInterpret
         setContentView(R.layout.activity_barcode_scanner);
         mPreview = (CameraSourcePreview) findViewById(R.id.camera_source_preview);
         checkForGooglePlayServices();
-
-        createCameraSource(AUTO_FOCUS, USE_FLASH);
+        try {
+            createCameraSource(AUTO_FOCUS, USE_FLASH);
+        } catch (RuntimeException ex) {
+            fail(-1);
+        }
     }
 
     private void setFullScreen() {
@@ -166,9 +170,12 @@ public class BarcodeScannerActivity extends Activity implements BarcodeInterpret
     }
 
     private void checkForGooglePlayServices() {
+        Log.d(TAG, "Checking for GooglePlayServices");
         final int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
         if (status != ConnectionResult.SUCCESS) {
-            GooglePlayServicesUtil.getErrorDialog(status, this, 0).show();
+            // For some reason, I could not get the activity to show the dialog here in a
+            // blocking way, so I am passing the error code to the main activity
+            fail(status);
         }
     }
 
@@ -177,6 +184,13 @@ public class BarcodeScannerActivity extends Activity implements BarcodeInterpret
         Intent result = new Intent();
         result.putExtra(BARCODE, barcode.displayValue);
         setResult(RESULT_OK, result);
+        finish();
+    }
+
+    private void fail(int errorCode) {
+        Intent result = new Intent();
+        result.putExtra("ERROR_CODE", errorCode);
+        setResult(RESULT_CANCELED, result);
         finish();
     }
 

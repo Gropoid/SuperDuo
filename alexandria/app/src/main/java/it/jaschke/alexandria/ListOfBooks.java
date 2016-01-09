@@ -22,6 +22,7 @@ import it.jaschke.alexandria.data.AlexandriaContract;
 
 public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final String TAG = ListOfBooks.class.getSimpleName();
     private BookListAdapter bookListAdapter;
     private ListView bookList;
     private int position = ListView.INVALID_POSITION;
@@ -113,6 +114,10 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        data.moveToFirst();
+        if (data.isAfterLast()) {
+            Log.v(TAG, "No books in  library!");
+        }
         bookListAdapter.swapCursor(data);
         if (position != ListView.INVALID_POSITION) {
             bookList.smoothScrollToPosition(position);
