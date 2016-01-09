@@ -34,8 +34,10 @@
             android:layout_gravity="center_horizontal"
             android:text="@string/share_text"
             android:drawableLeft="@android:drawable/ic_menu_share"
+            android:drawableStart="@android:drawable/ic_menu_share"
             android:paddingLeft="16dp"
-            android:paddingRight="16dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             android:gravity="left|center_vertical"
             android:layout_marginTop="20dp"/>
 
