@@ -19,7 +19,7 @@ public class Utilies
             case CHAMPIONS_LEAGUE : return "UEFA Champions League";
             case PRIMERA_DIVISION : return "Primera Division";
             case BUNDESLIGA : return "Bundesliga";
-            default: return "Not known League Please report";
+            default: return "Unknown League";
         }
     }
     public static String getMatchDay(int match_day,int league_num)
@@ -57,7 +57,7 @@ public class Utilies
     {
         if(home_goals < 0 || awaygoals < 0)
         {
-            return " - ";
+            return "";
         }
         else
         {
