@@ -27,11 +27,12 @@
     </LinearLayout>
 
         <Button
+            android:id="@+id/share_button"
+            android:contentDescription="@string/share_game_content_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="@string/share_text"
-            android:id="@+id/share_button"
             android:drawableLeft="@android:drawable/ic_menu_share"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
