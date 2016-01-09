@@ -139,7 +139,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         if (requestCode == BarcodeScannerActivity.BARCODE_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 ean.setText(data.getStringExtra(BarcodeScannerActivity.BARCODE));
-            } else if (resultCode == Activity.RESULT_CANCELED) {
+            } else if (data != null) {
                 int errorCode = data.getIntExtra(BarcodeScannerActivity.ERROR_CODE, -1);
                 if (errorCode == -1) {
                     Toast.makeText(getActivity(), "Could not initialize Barcode Scanner", Toast.LENGTH_LONG).show();
