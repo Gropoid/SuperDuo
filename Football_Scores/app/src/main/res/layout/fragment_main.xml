@@ -14,4 +14,11 @@
             android:divider="@android:color/transparent"
             android:dividerHeight="15sp"
             />
+        <TextView
+            android:id="@+id/scores_list_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/EmptyMatchList"
+            android:visibility="gone"
+            android:gravity="center_vertical|center_horizontal" />
 </FrameLayout>

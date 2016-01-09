@@ -10,7 +10,6 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import barqsoft.footballscores.service.myFetchService;
@@ -20,9 +19,13 @@ import barqsoft.footballscores.service.myFetchService;
  */
 public class MainScreenFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
-    public ScoresAdapter mAdapter;
+    private final static String TAG = MainScreenFragment.class.getSimpleName();
+
+    private ScoresAdapter mAdapter;
     public static final int SCORES_LOADER = 0;
-    private String[] fragmentdate = new String[1];
+    private String[] mFragmentDate = new String[1];
+    private ListView mScoreList;
+    private View mEmptyScoreList;
 
     public MainScreenFragment()
     {
@@ -35,16 +38,17 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
     }
     public void setFragmentDate(String date)
     {
-        fragmentdate[0] = date;
+        mFragmentDate[0] = date;
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              final Bundle savedInstanceState) {
         update_scores();
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        final ListView score_list = (ListView) rootView.findViewById(R.id.scores_list);
+        mScoreList = (ListView) rootView.findViewById(R.id.scores_list);
+        mEmptyScoreList =  rootView.findViewById(R.id.scores_list_empty);
         mAdapter = new ScoresAdapter(getActivity(),null,0);
-        score_list.setAdapter(mAdapter);
+        mScoreList.setAdapter(mAdapter);
         getLoaderManager().initLoader(SCORES_LOADER,null,this);
         return rootView;
     }
@@ -53,32 +57,31 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle)
     {
         return new CursorLoader(getActivity(),DatabaseContract.scores_table.buildScoreWithDate(),
-                null,null,fragmentdate,null);
+                null,null, mFragmentDate,null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor)
     {
         //Log.v(FetchScoreTask.LOG_TAG,"loader finished");
-        //cursor.moveToFirst();
-        /*
-        while (!cursor.isAfterLast())
-        {
-            Log.v(FetchScoreTask.LOG_TAG,cursor.getString(1));
-            cursor.moveToNext();
-        }
-        */
 
-        int i = 0;
         cursor.moveToFirst();
-        while (!cursor.isAfterLast())
-        {
-            i++;
-            cursor.moveToNext();
+        if (cursor.isAfterLast()) {
+            displayEmpty();
+        } else {
+            displayContents();
         }
-        //Log.v(FetchScoreTask.LOG_TAG,"Loader query: " + String.valueOf(i));
         mAdapter.swapCursor(cursor);
-        //mAdapter.notifyDataSetChanged();
+    }
+
+    private void displayEmpty() {
+        mScoreList.setVisibility(View.GONE);
+        mEmptyScoreList.setVisibility(View.VISIBLE);
+    }
+
+    private void displayContents() {
+        mScoreList.setVisibility(View.VISIBLE);
+        mEmptyScoreList.setVisibility(View.GONE);
     }
 
     @Override
