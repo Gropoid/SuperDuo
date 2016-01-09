@@ -25,6 +25,7 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     private static final String TAG = ListOfBooks.class.getSimpleName();
     private BookListAdapter bookListAdapter;
     private ListView bookList;
+    private View emptyBookList;
     private int position = ListView.INVALID_POSITION;
     private EditText searchText;
 
@@ -63,6 +64,7 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
         );
 
         bookList = (ListView) rootView.findViewById(R.id.listOfBooks);
+        emptyBookList = rootView.findViewById(R.id.emptyListOfBooks);
         bookList.setAdapter(bookListAdapter);
 
         bookList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -71,13 +73,19 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Cursor cursor = bookListAdapter.getCursor();
                 if (cursor != null && cursor.moveToPosition(position)) {
-                    ((Callback)getActivity())
+                    ((Callback) getActivity())
                             .onItemSelected(cursor.getString(cursor.getColumnIndex(AlexandriaContract.BookEntry._ID)));
                 }
             }
         });
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        restartLoader();
     }
 
     private void restartLoader(){
@@ -117,11 +125,24 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
         data.moveToFirst();
         if (data.isAfterLast()) {
             Log.v(TAG, "No books in  library!");
+            displayEmptyList();
+        } else {
+            bookListAdapter.swapCursor(data);
+            displayList();
+            if (position != ListView.INVALID_POSITION) {
+                bookList.smoothScrollToPosition(position);
+            }
         }
-        bookListAdapter.swapCursor(data);
-        if (position != ListView.INVALID_POSITION) {
-            bookList.smoothScrollToPosition(position);
-        }
+    }
+
+    private void displayList() {
+        bookList.setVisibility(View.VISIBLE);
+        emptyBookList.setVisibility(View.GONE);
+    }
+
+    private void displayEmptyList() {
+        bookList.setVisibility(View.GONE);
+        emptyBookList.setVisibility(View.VISIBLE);
     }
 
     @Override
