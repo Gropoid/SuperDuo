@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -31,6 +32,8 @@ import barqsoft.footballscores.R;
 public class myFetchService extends IntentService
 {
     public static final String LOG_TAG = "myFetchService";
+    public static final String ACTION_SCORES_UPDATED = "barqsoft.footballscores.service.myFetchService.ACTION_SCORES_UPDATED";
+
     public myFetchService()
     {
         super("myFetchService");
@@ -265,6 +268,9 @@ public class myFetchService extends IntentService
             inserted_data = mContext.getContentResolver().bulkInsert(
                     DatabaseContract.BASE_CONTENT_URI,insert_data);
 
+            // notify widgets
+            Intent intent = new Intent(ACTION_SCORES_UPDATED);
+            getBaseContext().sendBroadcast(intent);
             //Log.v(LOG_TAG,"Succesfully Inserted : " + String.valueOf(inserted_data));
         }
         catch (JSONException e)
